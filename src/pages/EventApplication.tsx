@@ -13,6 +13,7 @@ const EventApplication = () => {
   const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [userType, setUserType] = useState<"existing" | "new" | null>(null);
 
   const eventTitle = searchParams.get("title") || "Event";
   const eventDate = searchParams.get("date") || "";
@@ -21,6 +22,10 @@ const EventApplication = () => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  const handleUserTypeSelection = (type: "existing" | "new") => {
+    setUserType(type);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,56 +106,98 @@ const EventApplication = () => {
       {/* Application Form */}
       <main className="container mx-auto px-4 py-12 relative z-10">
         <Card className="max-w-2xl mx-auto p-8 bg-card/80 backdrop-blur-sm shadow-[var(--shadow-card)] border-0">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name *</Label>
-              <Input
-                id="name"
-                type="text"
-                required
-                placeholder="John Doe"
-                className="bg-background/50 backdrop-blur-sm"
-              />
+          {!userType ? (
+            <div className="space-y-8">
+              <div className="text-center space-y-2">
+                <h2 className="text-2xl font-bold text-foreground">
+                  Are you an existing core team member or volunteer?
+                </h2>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={() => handleUserTypeSelection("existing")}
+                  className="h-24 text-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-all"
+                >
+                  Yes
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={() => handleUserTypeSelection("new")}
+                  className="h-24 text-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-all"
+                >
+                  No
+                </Button>
+              </div>
             </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name *</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  required
+                  placeholder="John Doe"
+                  className="bg-background/50 backdrop-blur-sm"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address *</Label>
-              <Input
-                id="email"
-                type="email"
-                required
-                placeholder="john@example.com"
-                className="bg-background/50 backdrop-blur-sm"
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address *</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  required
+                  placeholder="john@example.com"
+                  className="bg-background/50 backdrop-blur-sm"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="+1 (555) 000-0000"
-                className="bg-background/50 backdrop-blur-sm"
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="+1 (555) 000-0000"
+                  className="bg-background/50 backdrop-blur-sm"
+                />
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="message">Why do you want to attend? *</Label>
-              <Textarea
-                id="message"
-                required
-                placeholder="Tell us why you're interested in this event..."
-                className="min-h-32 bg-background/50 backdrop-blur-sm"
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="message">Why do you want to attend? *</Label>
+                <Textarea
+                  id="message"
+                  required
+                  placeholder="Tell us why you're interested in this event..."
+                  className="min-h-32 bg-background/50 backdrop-blur-sm"
+                />
+              </div>
 
-            <Button type="submit" className="w-full group/btn relative overflow-hidden shadow-lg hover:shadow-xl">
-              <span className="relative z-10 flex items-center justify-center">
-                Submit Application
-                <Sparkles className="w-4 h-4 ml-2 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
-              </span>
-            </Button>
-          </form>
+              <div className="flex gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setUserType(null)}
+                  className="flex-1"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
+                <Button type="submit" className="flex-1 group/btn relative overflow-hidden shadow-lg hover:shadow-xl">
+                  <span className="relative z-10 flex items-center justify-center">
+                    Submit Application
+                    <Sparkles className="w-4 h-4 ml-2 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300" />
+                  </span>
+                </Button>
+              </div>
+            </form>
+          )}
         </Card>
       </main>
     </div>
