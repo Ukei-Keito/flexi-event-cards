@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Calendar, MapPin, CheckCircle2, Sparkles, TrendingUp } from "lucide-react";
@@ -71,6 +72,7 @@ const events: Event[] = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
   const [appliedEvents, setAppliedEvents] = useState<Set<number>>(new Set());
   const [isVisible, setIsVisible] = useState(false);
 
@@ -78,12 +80,13 @@ const Index = () => {
     setIsVisible(true);
   }, []);
 
-  const handleApply = (eventId: number, eventTitle: string) => {
-    setAppliedEvents(prev => new Set(prev).add(eventId));
-    toast.success("Successfully applied!", {
-      description: `You've registered for ${eventTitle}`,
-      duration: 3000,
+  const handleApply = (event: Event) => {
+    const params = new URLSearchParams({
+      title: event.title,
+      date: event.date,
+      location: event.location,
     });
+    navigate(`/apply?${params.toString()}`);
   };
 
   return (
@@ -185,7 +188,7 @@ const Index = () => {
                   </p>
 
                   <Button
-                    onClick={() => handleApply(event.id, event.title)}
+                    onClick={() => handleApply(event)}
                     disabled={isApplied}
                     className="w-full transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl relative overflow-hidden group/btn"
                     variant={isApplied ? "secondary" : "default"}
